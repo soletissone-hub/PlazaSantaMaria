@@ -6,9 +6,11 @@
 <title>Presupuestos Santa Maria de Tigre</title>
 <style>
 body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
-header { background: #1565C0; color: white; padding: 16px; }
+header { background: #1565C0; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 header h1 { font-size: 18px; margin: 0 0 4px 0; }
 header p { font-size: 12px; margin: 0; opacity: 0.8; }
+.btn-resumen { background: white; color: #1565C0; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+.btn-resumen:hover { background: #E3F2FD; }
 .container { padding: 16px; max-width: 900px; margin: 0 auto; }
 .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .tab { padding: 8px 16px; border-radius: 8px; border: 1px solid #ccc; background: white; color: #555; font-size: 13px; cursor: pointer; }
@@ -24,14 +26,16 @@ header p { font-size: 12px; margin: 0; opacity: 0.8; }
 .badge-azul { background: #BBDEFB; color: #0C447C; }
 .badge-verde { background: #C8E6C9; color: #1B5E20; }
 .card-body { padding: 0 16px; }
-.item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-.item input { margin-top: 3px; width: 18px; height: 18px; flex-shrink: 0; }
-.item-info { flex: 1; }
+.item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+.item input { width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+.item-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; background: #f5f5f5; }
+.item-thumb-ph { width: 56px; height: 56px; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.item-info { flex: 1; min-width: 0; }
 .item-nombre { font-size: 13px; color: #212121; }
 .item-nombre-off { font-size: 13px; color: #bbb; text-decoration: line-through; }
 .item-cod { font-size: 11px; color: #999; font-family: monospace; }
-.item-precio { font-size: 13px; font-weight: bold; white-space: nowrap; padding-top: 2px; }
-.item-precio-off { font-size: 13px; color: #bbb; text-decoration: line-through; white-space: nowrap; padding-top: 2px; }
+.item-precio { font-size: 13px; font-weight: bold; white-space: nowrap; }
+.item-precio-off { font-size: 13px; color: #bbb; text-decoration: line-through; white-space: nowrap; }
 .totales { background: #fafafa; border-top: 1px solid #eee; padding: 12px 16px; font-size: 13px; }
 .trow { display: flex; justify-content: space-between; padding: 3px 0; color: #555; }
 .ttotal { display: flex; justify-content: space-between; padding: 8px 0 3px 0; margin-top: 6px; border-top: 1px solid #ddd; font-weight: bold; font-size: 15px; color: #212121; }
@@ -40,20 +44,50 @@ header p { font-size: 12px; margin: 0; opacity: 0.8; }
 .twarn { background: #FFF8E1; color: #F57F17; }
 .tno { background: #FFEBEE; color: #C62828; }
 .desc { font-size: 12px; background: #FFF3E0; color: #E65100; padding: 6px 10px; border-radius: 6px; margin-top: 6px; }
-.resumen { background: white; border-radius: 10px; border: 2px solid #1565C0; margin-top: 20px; overflow: hidden; }
-.resumen-header { background: #1565C0; color: white; padding: 12px 16px; font-size: 14px; font-weight: bold; }
-.resumen-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-.resumen-item-info { flex: 1; }
-.resumen-proveedor { font-size: 11px; color: #888; margin-top: 1px; }
-.resumen-total { background: #E3F2FD; padding: 12px 16px; display: flex; justify-content: space-between; font-weight: bold; font-size: 15px; color: #0C447C; }
-.resumen-vacio { padding: 16px; color: #aaa; font-size: 13px; text-align: center; }
+.resumen-bar { background: white; border-radius: 10px; border: 2px solid #1565C0; margin-top: 20px; overflow: hidden; }
+.resumen-bar-header { background: #1565C0; color: white; padding: 12px 16px; font-size: 14px; font-weight: bold; }
+.resumen-bar-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+.resumen-bar-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 5px; border: 1px solid #eee; flex-shrink: 0; }
+.resumen-bar-thumb-ph { width: 44px; height: 44px; border-radius: 5px; border: 1px solid #eee; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.resumen-bar-info { flex: 1; min-width: 0; }
+.resumen-bar-sub { font-size: 11px; color: #888; margin-top: 1px; }
+.resumen-bar-total { background: #E3F2FD; padding: 12px 16px; display: flex; justify-content: space-between; font-weight: bold; font-size: 15px; color: #0C447C; }
+.resumen-bar-vacio { padding: 16px; color: #aaa; font-size: 13px; text-align: center; }
+
+/* Modal resumen */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+.modal-overlay.activo { display: flex; align-items: flex-start; justify-content: center; }
+.modal { background: white; border-radius: 12px; width: 100%; max-width: 820px; overflow: hidden; }
+.modal-head { background: #1565C0; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.modal-head h2 { margin: 0; font-size: 16px; }
+.modal-head p { margin: 4px 0 0 0; font-size: 12px; opacity: 0.8; }
+.modal-close { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; line-height: 1; }
+.modal-close:hover { background: rgba(255,255,255,0.35); }
+.modal-body { padding: 20px; }
+.modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.modal-card { border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; }
+.modal-card img { width: 100%; height: 160px; object-fit: cover; background: #f5f5f5; display: block; }
+.modal-card-ph { width: 100%; height: 160px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.modal-card-info { padding: 10px 12px; }
+.modal-card-nm { font-size: 13px; font-weight: bold; color: #212121; }
+.modal-card-cd { font-size: 11px; color: #999; font-family: monospace; margin-top: 2px; }
+.modal-card-pres { font-size: 11px; color: #888; margin-top: 4px; }
+.modal-card-pr { font-size: 14px; font-weight: bold; color: #1565C0; margin-top: 6px; }
+.modal-foot { background: #E3F2FD; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.modal-foot-total { font-size: 18px; font-weight: bold; color: #0C447C; }
+.modal-foot-sub { font-size: 12px; color: #555; }
+.modal-vacio { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
 </style>
 </head>
 <body>
 <header>
-  <h1>Presupuestos - Barrio Santa Maria de Tigre</h1>
-  <p>Consorcio de Propietarios | Av. Santa Maria de Tigre 6385 | Mayo 2026</p>
+  <div>
+    <h1>Presupuestos - Barrio Santa Maria de Tigre</h1>
+    <p>Consorcio de Propietarios | Av. Santa Maria de Tigre 6385 | Mayo 2026</p>
+  </div>
+  <button class="btn-resumen" onclick="abrirResumen()">Ver seleccion</button>
 </header>
+
 <div class="container">
   <div class="tabs">
     <button id="bt" class="tab tab-azul" onclick="filtrar('todos')">Todos</button>
@@ -61,9 +95,41 @@ header p { font-size: 12px; margin: 0; opacity: 0.8; }
     <button id="bm" class="tab" onclick="filtrar('mundo')">Mundo Juegos</button>
   </div>
   <div id="lista"></div>
-  <div id="resumen" class="resumen"></div>
+  <div id="resumen-bar" class="resumen-bar"></div>
 </div>
+
+<!-- Modal -->
+<div id="modal" class="modal-overlay" onclick="cerrarResumenFuera(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>Seleccion combinada</h2>
+        <p>Barrio Santa Maria de Tigre | Mayo 2026</p>
+      </div>
+      <button class="modal-close" onclick="cerrarResumen()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div id="modal-grid" class="modal-grid"></div>
+    </div>
+    <div class="modal-foot" id="modal-foot">
+      <div class="modal-foot-sub"></div>
+      <div class="modal-foot-total"></div>
+    </div>
+  </div>
+</div>
+
 <script>
+var FOTOS = {
+  c1a:"fotos/c1a.jpg", c1b:"fotos/c1b.png", c1c:"fotos/c1c.png", c1d:"fotos/c1d.png", c1e:"fotos/c1e.png",
+  c2a:"fotos/c2a.jpg", c2b:"fotos/c1c.png", c2c:null, c2d:"fotos/c1d.png", c2e:null,
+  c3a:"fotos/c3a.jpg", c3b:"fotos/c1c.png", c3c:null, c3d:"fotos/c1d.png",
+  m1a:"fotos/m1a.jpg", m1b:"fotos/m1b.jpg", m1c:"fotos/m1c.jpg",
+  m2a:"fotos/m2a.png", m2b:"fotos/m2b.png", m2c:"fotos/m2c.png", m2d:"fotos/m2d.png",
+  m3a:"fotos/m3a.png", m3b:"fotos/m2b.png", m3c:"fotos/m2c.png", m3d:"fotos/m2d.png",
+  m4a:"fotos/m4a.png", m4b:"fotos/m2b.png", m4c:"fotos/m2c.png", m4d:"fotos/m2d.png",
+  m5a:"fotos/m5a.png", m5b:"fotos/m2b.png", m5c:"fotos/m2c.png", m5d:"fotos/m2d.png"
+};
+
 var PP = [
   { id:"c1", emp:"cruci", col:"azul", tit:"CRUCI - Pres. 00236857", fec:"05/05/2026", sub:"Refugio Bosque Grande + Mini Refugio + Pisos", fl:661936.21, ar:7725779.76, iv:0.2393, ds:0,
     items:[
@@ -149,6 +215,12 @@ function fmt(n) {
   return "$ " + out;
 }
 
+function thumb(id, cls, size) {
+  var f = FOTOS[id];
+  if (f) return '<img src="' + f + '" class="' + cls + '" alt="" onerror="this.outerHTML=\'<div class=&quot;' + cls + '-ph&quot;>&#x1F3AE;</div>\'">';
+  return '<div class="' + cls + '-ph">&#x1F3AE;</div>';
+}
+
 function filtrar(f) {
   filtro = f;
   document.getElementById("bt").className = "tab";
@@ -160,15 +232,8 @@ function filtrar(f) {
   render();
 }
 
-function toggleOpen(id) {
-  open[id] = !open[id];
-  render();
-}
-
-function toggleSel(id) {
-  sel[id] = !sel[id];
-  render();
-}
+function toggleOpen(id) { open[id] = !open[id]; render(); }
+function toggleSel(id) { sel[id] = !sel[id]; render(); }
 
 function calc(p) {
   var st = 0;
@@ -178,6 +243,19 @@ function calc(p) {
   var base = st + p.fl + p.ar;
   var iva = base * p.iv;
   return { st: st, iva: iva, total: base + iva };
+}
+
+function getSelItems() {
+  var out = [];
+  for (var i = 0; i < PP.length; i++) {
+    var p = PP[i];
+    if (filtro !== "todos" && p.emp !== filtro) continue;
+    for (var j = 0; j < p.items.length; j++) {
+      var it = p.items[j];
+      if (sel[it.id]) out.push({ id: it.id, nm: it.nm, cd: it.cd, pr: it.pr, pres: p.tit, emp: p.emp, col: p.col });
+    }
+  }
+  return out;
 }
 
 function render() {
@@ -200,6 +278,7 @@ function render() {
         var on = sel[it.id];
         h += '<div class="item">';
         h += '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="toggleSel(\'' + it.id + '\')">';
+        h += thumb(it.id, 'item-thumb', 56);
         h += '<div class="item-info"><div class="' + (on ? 'item-nombre' : 'item-nombre-off') + '">' + it.nm + '</div>';
         h += '<div class="item-cod">' + it.cd + '</div></div>';
         h += '<div class="' + (on ? 'item-precio' : 'item-precio-off') + '">' + fmt(it.pr) + '</div>';
@@ -222,36 +301,69 @@ function render() {
     h += '</div>';
   }
   document.getElementById("lista").innerHTML = h;
-  renderResumen();
+  renderResumenBar();
 }
 
-function renderResumen() {
-  var selItems = [];
-  for (var i = 0; i < PP.length; i++) {
-    var p = PP[i];
-    if (filtro !== "todos" && p.emp !== filtro) continue;
-    for (var j = 0; j < p.items.length; j++) {
-      var it = p.items[j];
-      if (sel[it.id]) selItems.push({ nm: it.nm, cd: it.cd, pr: it.pr, pres: p.tit, emp: p.emp, col: p.col });
-    }
-  }
-  var el = document.getElementById("resumen");
-  if (selItems.length === 0) {
-    el.innerHTML = '<div class="resumen-header">Seleccion combinada</div><div class="resumen-vacio">Selecciona articulos de cualquier presupuesto para ver el total combinado.</div>';
+function renderResumenBar() {
+  var items = getSelItems();
+  var el = document.getElementById("resumen-bar");
+  if (items.length === 0) {
+    el.innerHTML = '<div class="resumen-bar-header">Seleccion combinada</div><div class="resumen-bar-vacio">Selecciona articulos de cualquier presupuesto para ver el total combinado.</div>';
     return;
   }
   var total = 0;
-  var h = '<div class="resumen-header">Seleccion combinada (' + selItems.length + ' articulos)</div>';
-  for (var k = 0; k < selItems.length; k++) {
-    var it = selItems[k];
+  var h = '<div class="resumen-bar-header">Seleccion combinada (' + items.length + ' articulos)</div>';
+  for (var k = 0; k < items.length; k++) {
+    var it = items[k];
     total += it.pr;
-    h += '<div class="resumen-item">';
-    h += '<div class="resumen-item-info"><div>' + it.nm + '</div><div class="resumen-proveedor">' + it.pres + ' &mdash; ' + it.cd + '</div></div>';
+    var f = FOTOS[it.id];
+    var img = f ? '<img src="' + f + '" class="resumen-bar-thumb" onerror="this.outerHTML=\'<div class=&quot;resumen-bar-thumb-ph&quot;>&#x1F3AE;</div>\'">' : '<div class="resumen-bar-thumb-ph">&#x1F3AE;</div>';
+    h += '<div class="resumen-bar-item">' + img;
+    h += '<div class="resumen-bar-info"><div>' + it.nm + '</div><div class="resumen-bar-sub">' + it.pres + ' &mdash; ' + it.cd + '</div></div>';
     h += '<div style="font-size:13px;font-weight:bold;white-space:nowrap;padding-left:12px">' + fmt(it.pr) + '</div>';
     h += '</div>';
   }
-  h += '<div class="resumen-total"><span>TOTAL COMBINADO</span><span>' + fmt(total) + '</span></div>';
+  h += '<div class="resumen-bar-total"><span>TOTAL COMBINADO</span><span>' + fmt(total) + '</span></div>';
   el.innerHTML = h;
+}
+
+function abrirResumen() {
+  var items = getSelItems();
+  var grid = document.getElementById("modal-grid");
+  var foot = document.getElementById("modal-foot");
+  if (items.length === 0) {
+    grid.innerHTML = '<div class="modal-vacio">No hay articulos seleccionados.</div>';
+    foot.innerHTML = '';
+  } else {
+    var total = 0;
+    var h = "";
+    for (var k = 0; k < items.length; k++) {
+      var it = items[k];
+      total += it.pr;
+      var f = FOTOS[it.id];
+      var imgEl = f ? '<img src="' + f + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' + '<div class="modal-card-ph" style="display:none">&#x1F3AE;</div>' : '<div class="modal-card-ph">&#x1F3AE;</div>';
+      h += '<div class="modal-card">' + imgEl;
+      h += '<div class="modal-card-info">';
+      h += '<div class="modal-card-nm">' + it.nm + '</div>';
+      h += '<div class="modal-card-cd">' + it.cd + '</div>';
+      h += '<div class="modal-card-pres">' + it.pres + '</div>';
+      h += '<div class="modal-card-pr">' + fmt(it.pr) + '</div>';
+      h += '</div></div>';
+    }
+    grid.innerHTML = h;
+    foot.innerHTML = '<div class="modal-foot-sub">' + items.length + ' articulos seleccionados</div><div class="modal-foot-total">TOTAL: ' + fmt(total) + '</div>';
+  }
+  document.getElementById("modal").classList.add("activo");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarResumen() {
+  document.getElementById("modal").classList.remove("activo");
+  document.body.style.overflow = "";
+}
+
+function cerrarResumenFuera(e) {
+  if (e.target === document.getElementById("modal")) cerrarResumen();
 }
 
 render();
