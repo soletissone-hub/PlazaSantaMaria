@@ -121,8 +121,8 @@ header p { font-size: 12px; margin: 0; opacity: 0.8; }
 <script>
 var FOTOS = {
   c1a:"fotos/c1a.jpg", c1b:"fotos/c1b.png", c1c:"fotos/c1c.png", c1d:"fotos/c1d.png", c1e:"fotos/c1e.png",
-  c2a:"fotos/c2a.jpg", c2b:"fotos/c1c.png", c2c:null, c2d:"fotos/c1d.png", c2e:null,
-  c3a:"fotos/c3a.jpg", c3b:"fotos/c1c.png", c3c:null, c3d:"fotos/c1d.png",
+  c2a:"fotos/c2a.jpg", c2b:"fotos/c1c.png", c2c:"fotos/c2c.jpg", c2d:"fotos/c1d.png", c2e:null,
+  c3a:"fotos/c3a.jpg", c3b:"fotos/c1c.png", c3c:"fotos/c2c.jpg", c3d:"fotos/c1d.png",
   m1a:"fotos/m1a.jpg", m1b:"fotos/m1b.jpg", m1c:"fotos/m1c.jpg",
   m2a:"fotos/m2a.png", m2b:"fotos/m2b.png", m2c:"fotos/m2c.png", m2d:"fotos/m2d.png",
   m3a:"fotos/m3a.png", m3b:"fotos/m2b.png", m3c:"fotos/m2c.png", m3d:"fotos/m2d.png",
@@ -252,7 +252,7 @@ function getSelItems() {
     if (filtro !== "todos" && p.emp !== filtro) continue;
     for (var j = 0; j < p.items.length; j++) {
       var it = p.items[j];
-      if (sel[it.id]) out.push({ id: it.id, nm: it.nm, cd: it.cd, pr: it.pr, pres: p.tit, emp: p.emp, col: p.col });
+      if (sel[it.id]) out.push({ id: it.id, nm: it.nm, cd: it.cd, pr: it.pr, pres: p.tit, emp: p.emp, col: p.col, pid: p.id, pobj: p });
     }
   }
   return out;
@@ -304,18 +304,42 @@ function render() {
   renderResumenBar();
 }
 
-function renderResumenBar() {
+function calcResumen() {
   var items = getSelItems();
+  var presMap = {};
+  for (var k = 0; k < items.length; k++) {
+    var it = items[k];
+    if (!presMap[it.pid]) presMap[it.pid] = { p: it.pobj, subtotal: 0 };
+    presMap[it.pid].subtotal += it.pr;
+  }
+  var grand = 0;
+  var extras = [];
+  for (var pid in presMap) {
+    var p = presMap[pid].p;
+    var st = presMap[pid].subtotal;
+    if (p.emp === "cruci") {
+      var base = st + p.fl + p.ar;
+      var iva = base * p.iv;
+      grand += base + iva;
+      extras.push({ pres: p.tit, fl: p.fl, ar: p.ar, iva: iva, emp: "cruci" });
+    } else {
+      grand += st;
+      extras.push({ pres: p.tit, fl: 0, ar: 0, iva: 0, emp: "mundo" });
+    }
+  }
+  return { items: items, extras: extras, grand: grand };
+}
+
+function renderResumenBar() {
+  var r = calcResumen();
   var el = document.getElementById("resumen-bar");
-  if (items.length === 0) {
+  if (r.items.length === 0) {
     el.innerHTML = '<div class="resumen-bar-header">Seleccion combinada</div><div class="resumen-bar-vacio">Selecciona articulos de cualquier presupuesto para ver el total combinado.</div>';
     return;
   }
-  var total = 0;
-  var h = '<div class="resumen-bar-header">Seleccion combinada (' + items.length + ' articulos)</div>';
-  for (var k = 0; k < items.length; k++) {
-    var it = items[k];
-    total += it.pr;
+  var h = '<div class="resumen-bar-header">Seleccion combinada (' + r.items.length + ' articulos)</div>';
+  for (var k = 0; k < r.items.length; k++) {
+    var it = r.items[k];
     var f = FOTOS[it.id];
     var img = f ? '<img src="' + f + '" class="resumen-bar-thumb" onerror="this.outerHTML=\'<div class=&quot;resumen-bar-thumb-ph&quot;>&#x1F3AE;</div>\'">' : '<div class="resumen-bar-thumb-ph">&#x1F3AE;</div>';
     h += '<div class="resumen-bar-item">' + img;
@@ -323,23 +347,36 @@ function renderResumenBar() {
     h += '<div style="font-size:13px;font-weight:bold;white-space:nowrap;padding-left:12px">' + fmt(it.pr) + '</div>';
     h += '</div>';
   }
-  h += '<div class="resumen-bar-total"><span>TOTAL COMBINADO</span><span>' + fmt(total) + '</span></div>';
+  for (var e = 0; e < r.extras.length; e++) {
+    var ex = r.extras[e];
+    if (ex.emp === "cruci") {
+      h += '<div class="resumen-bar-item" style="background:#fafafa">';
+      h += '<div style="flex:1;font-size:12px;color:#555">' + ex.pres + '</div>';
+      h += '<div style="font-size:12px;color:#555;text-align:right">';
+      h += 'Flete: ' + fmt(ex.fl) + ' &nbsp;|&nbsp; Armado: ' + fmt(ex.ar) + ' &nbsp;|&nbsp; IVA: ' + fmt(ex.iva);
+      h += '</div></div>';
+    } else {
+      h += '<div class="resumen-bar-item" style="background:#fafafa">';
+      h += '<div style="flex:1;font-size:12px;color:#555">' + ex.pres + '</div>';
+      h += '<div style="font-size:12px;color:#888">Flete y armado a convenir</div>';
+      h += '</div>';
+    }
+  }
+  h += '<div class="resumen-bar-total"><span>TOTAL COMBINADO</span><span>' + fmt(r.grand) + '</span></div>';
   el.innerHTML = h;
 }
 
 function abrirResumen() {
-  var items = getSelItems();
+  var r = calcResumen();
   var grid = document.getElementById("modal-grid");
   var foot = document.getElementById("modal-foot");
-  if (items.length === 0) {
+  if (r.items.length === 0) {
     grid.innerHTML = '<div class="modal-vacio">No hay articulos seleccionados.</div>';
     foot.innerHTML = '';
   } else {
-    var total = 0;
     var h = "";
-    for (var k = 0; k < items.length; k++) {
-      var it = items[k];
-      total += it.pr;
+    for (var k = 0; k < r.items.length; k++) {
+      var it = r.items[k];
       var f = FOTOS[it.id];
       var imgEl = f ? '<img src="' + f + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' + '<div class="modal-card-ph" style="display:none">&#x1F3AE;</div>' : '<div class="modal-card-ph">&#x1F3AE;</div>';
       h += '<div class="modal-card">' + imgEl;
@@ -350,8 +387,21 @@ function abrirResumen() {
       h += '<div class="modal-card-pr">' + fmt(it.pr) + '</div>';
       h += '</div></div>';
     }
+    var extrasH = '';
+    for (var e = 0; e < r.extras.length; e++) {
+      var ex = r.extras[e];
+      if (ex.emp === "cruci") {
+        extrasH += '<div style="font-size:12px;color:#555;padding:6px 0;border-top:1px solid #ddd;margin-top:4px">';
+        extrasH += '<b>' + ex.pres + '</b> &mdash; Flete: ' + fmt(ex.fl) + ' | Armado: ' + fmt(ex.ar) + ' | IVA: ' + fmt(ex.iva);
+        extrasH += '</div>';
+      } else {
+        extrasH += '<div style="font-size:12px;color:#888;padding:6px 0;border-top:1px solid #ddd;margin-top:4px">';
+        extrasH += '<b>' + ex.pres + '</b> &mdash; Flete y armado a convenir';
+        extrasH += '</div>';
+      }
+    }
     grid.innerHTML = h;
-    foot.innerHTML = '<div class="modal-foot-sub">' + items.length + ' articulos seleccionados</div><div class="modal-foot-total">TOTAL: ' + fmt(total) + '</div>';
+    foot.innerHTML = '<div class="modal-foot-sub" style="flex:1">' + r.items.length + ' articulos' + (extrasH ? '<br>' + extrasH : '') + '</div><div class="modal-foot-total" style="white-space:nowrap">TOTAL: ' + fmt(r.grand) + '</div>';
   }
   document.getElementById("modal").classList.add("activo");
   document.body.style.overflow = "hidden";
