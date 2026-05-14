@@ -156,34 +156,34 @@ var PP = [
       {id:"c3c",nm:"Hamaca Nido (930)",cd:"P04089-E",pr:1592962.40},
       {id:"c3d",nm:"Calesita Circus",cd:"P04072-E",pr:1023954.56}
     ]},
-  { id:"m1", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10317", fec:"13/05/2026", sub:"Balcon de los Andes + Magic 2T + Hamaca", fl:0, ar:0, iv:0, ds:0,
+  { id:"m1", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10317", fec:"13/05/2026", sub:"Balcon de los Andes + Magic 2T + Hamaca", fl:2500000, ar:0, iv:0, ds:0,
     items:[
       {id:"m1a",nm:"Mangrullo Balcon de los Andes",cd:"J20.38",pr:34923413.25},
       {id:"m1b",nm:"Mangrullo Magic 2 Torres Alt.A",cd:"J14.13A",pr:7921147.51},
       {id:"m1c",nm:"Hamaca Cuadruple Inclusiva (3 cinta+1 silla)",cd:"JI09.8",pr:2121273.99}
     ]},
-  { id:"m2", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10318", fec:"13/05/2026", sub:"Barco Pirata + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+  { id:"m2", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10318", fec:"13/05/2026", sub:"Barco Pirata + Hamacas (x3 tipos)", fl:2500000, ar:0, iv:0, ds:0.10,
     items:[
       {id:"m2a",nm:"Barco Pirata",cd:"J20.35",pr:19008684.49},
       {id:"m2b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
       {id:"m2c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
       {id:"m2d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
     ]},
-  { id:"m3", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10319", fec:"13/05/2026", sub:"Velero Gigante + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+  { id:"m3", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10319", fec:"13/05/2026", sub:"Velero Gigante + Hamacas (x3 tipos)", fl:2500000, ar:0, iv:0, ds:0.10,
     items:[
       {id:"m3a",nm:"Velero Gigante",cd:"J20.25",pr:37769304.22},
       {id:"m3b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
       {id:"m3c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
       {id:"m3d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
     ]},
-  { id:"m4", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10320", fec:"13/05/2026", sub:"Mangrullo Inclusivo Arbol + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+  { id:"m4", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10320", fec:"13/05/2026", sub:"Mangrullo Inclusivo Arbol + Hamacas (x3 tipos)", fl:2500000, ar:0, iv:0, ds:0.10,
     items:[
       {id:"m4a",nm:"Mangrullo Inclusivo Arbol",cd:"JI20.7",pr:21902585.10},
       {id:"m4b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
       {id:"m4c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
       {id:"m4d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
     ]},
-  { id:"m5", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10321", fec:"13/05/2026", sub:"Mangrullo Integrador 2T + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+  { id:"m5", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10321", fec:"13/05/2026", sub:"Mangrullo Integrador 2T + Hamacas (x3 tipos)", fl:2500000, ar:0, iv:0, ds:0.10,
     items:[
       {id:"m5a",nm:"Mangrullo Integrador 2T (tobogan, palestra, trepa)",cd:"JI05.8",pr:5691222.90},
       {id:"m5b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
@@ -291,8 +291,7 @@ function render() {
         h += '<div class="trow"><span>Armado <span class="tag tok">incluido</span></span><span>' + fmt(p.ar) + '</span></div>';
         h += '<div class="trow"><span>IVA (21%)</span><span>' + fmt(c.iva) + '</span></div>';
       } else {
-        h += '<div class="trow"><span>Flete <span class="tag twarn">a convenir</span></span><span>-</span></div>';
-        h += '<div class="trow"><span>Armado <span class="tag tno">no incluido</span></span><span>-</span></div>';
+        h += '<div class="trow"><span>Flete + Instalacion <span class="tag twarn">estimado</span></span><span>' + fmt(p.fl) + '</span></div>';
         if (p.ds) h += '<div class="desc">Descuento ' + Math.round(p.ds*100) + '% contado o cheque 0-30 dias: ' + fmt(c.st*(1-p.ds)) + '</div>';
       }
       h += '<div class="ttotal"><span>TOTAL</span><span>' + fmt(c.total) + '</span></div>';
@@ -323,8 +322,8 @@ function calcResumen() {
       grand += base + iva;
       extras.push({ pres: p.tit, fl: p.fl, ar: p.ar, iva: iva, emp: "cruci" });
     } else {
-      grand += st;
-      extras.push({ pres: p.tit, fl: 0, ar: 0, iva: 0, emp: "mundo" });
+      grand += st + p.fl;
+      extras.push({ pres: p.tit, fl: p.fl, ar: 0, iva: 0, emp: "mundo" });
     }
   }
   return { items: items, extras: extras, grand: grand };
@@ -358,7 +357,7 @@ function renderResumenBar() {
     } else {
       h += '<div class="resumen-bar-item" style="background:#fafafa">';
       h += '<div style="flex:1;font-size:12px;color:#555">' + ex.pres + '</div>';
-      h += '<div style="font-size:12px;color:#888">Flete y armado a convenir</div>';
+      h += '<div style="font-size:12px;color:#555">Flete + Instalacion (est.): ' + fmt(ex.fl) + '</div>';
       h += '</div>';
     }
   }
@@ -395,8 +394,8 @@ function abrirResumen() {
         extrasH += '<b>' + ex.pres + '</b> &mdash; Flete: ' + fmt(ex.fl) + ' | Armado: ' + fmt(ex.ar) + ' | IVA: ' + fmt(ex.iva);
         extrasH += '</div>';
       } else {
-        extrasH += '<div style="font-size:12px;color:#888;padding:6px 0;border-top:1px solid #ddd;margin-top:4px">';
-        extrasH += '<b>' + ex.pres + '</b> &mdash; Flete y armado a convenir';
+        extrasH += '<div style="font-size:12px;color:#555;padding:6px 0;border-top:1px solid #ddd;margin-top:4px">';
+        extrasH += '<b>' + ex.pres + '</b> &mdash; Flete + Instalacion (est.): ' + fmt(ex.fl);
         extrasH += '</div>';
       }
     }
