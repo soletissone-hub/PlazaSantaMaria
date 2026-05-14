@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presupuestos Santa Maria de Tigre</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
+header { background: #1565C0; color: white; padding: 16px; }
+header h1 { font-size: 18px; margin: 0 0 4px 0; }
+header p { font-size: 12px; margin: 0; opacity: 0.8; }
+.container { padding: 16px; max-width: 900px; margin: 0 auto; }
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab { padding: 8px 16px; border-radius: 8px; border: 1px solid #ccc; background: white; color: #555; font-size: 13px; cursor: pointer; }
+.tab-azul { background: #E3F2FD; color: #0C447C; border-color: #1565C0; }
+.tab-verde { background: #E8F5E9; color: #1B5E20; border-color: #2E7D32; }
+.card { background: white; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 12px; overflow: hidden; }
+.card-header { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.hdr-azul { background: #E3F2FD; }
+.hdr-verde { background: #E8F5E9; }
+.card-title { font-size: 14px; font-weight: bold; color: #212121; }
+.card-sub { font-size: 12px; color: #757575; margin-top: 2px; }
+.badge { font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 6px; white-space: nowrap; margin-left: 8px; flex-shrink: 0; }
+.badge-azul { background: #BBDEFB; color: #0C447C; }
+.badge-verde { background: #C8E6C9; color: #1B5E20; }
+.card-body { padding: 0 16px; }
+.item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+.item input { margin-top: 3px; width: 18px; height: 18px; flex-shrink: 0; }
+.item-info { flex: 1; }
+.item-nombre { font-size: 13px; color: #212121; }
+.item-nombre-off { font-size: 13px; color: #bbb; text-decoration: line-through; }
+.item-cod { font-size: 11px; color: #999; font-family: monospace; }
+.item-precio { font-size: 13px; font-weight: bold; white-space: nowrap; padding-top: 2px; }
+.item-precio-off { font-size: 13px; color: #bbb; text-decoration: line-through; white-space: nowrap; padding-top: 2px; }
+.totales { background: #fafafa; border-top: 1px solid #eee; padding: 12px 16px; font-size: 13px; }
+.trow { display: flex; justify-content: space-between; padding: 3px 0; color: #555; }
+.ttotal { display: flex; justify-content: space-between; padding: 8px 0 3px 0; margin-top: 6px; border-top: 1px solid #ddd; font-weight: bold; font-size: 15px; color: #212121; }
+.tag { font-size: 11px; padding: 2px 7px; border-radius: 5px; margin-left: 5px; }
+.tok { background: #E8F5E9; color: #2E7D32; }
+.twarn { background: #FFF8E1; color: #F57F17; }
+.tno { background: #FFEBEE; color: #C62828; }
+.desc { font-size: 12px; background: #FFF3E0; color: #E65100; padding: 6px 10px; border-radius: 6px; margin-top: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Presupuestos - Barrio Santa Maria de Tigre</h1>
+  <p>Consorcio de Propietarios | Av. Santa Maria de Tigre 6385 | Mayo 2026</p>
+</header>
+<div class="container">
+  <div class="tabs">
+    <button id="bt" class="tab tab-azul" onclick="filtrar('todos')">Todos</button>
+    <button id="bc" class="tab" onclick="filtrar('cruci')">CRUCI SRL</button>
+    <button id="bm" class="tab" onclick="filtrar('mundo')">Mundo Juegos</button>
+  </div>
+  <div id="lista"></div>
+</div>
+<script>
+var PP = [
+  { id:"c1", emp:"cruci", col:"azul", tit:"CRUCI - Pres. 00236857", fec:"05/05/2026", sub:"Refugio Bosque Grande + Mini Refugio + Pisos", fl:661936.21, ar:7725779.76, iv:0.2393, ds:0,
+    items:[
+      {id:"c1a",nm:"Refugio del Bosque Grande",cd:"P16103-A",pr:47951984.09},
+      {id:"c1b",nm:"Mini Refugio del Bosque",cd:"P16106-A",pr:10408297.08},
+      {id:"c1c",nm:"Domo Escalador",cd:"R04079-SM",pr:1175219.54},
+      {id:"c1d",nm:"Calesita Circus",cd:"P04072-A",pr:942018.98},
+      {id:"c1e",nm:"Hamaca Triple Mixta Integradora (790)",cd:"P04109-A",pr:1667080.65},
+      {id:"c1f",nm:"ADH Poliuretanico p/Piso x10 kg (x10)",cd:"R03004-SM",pr:2150764.84},
+      {id:"c1g",nm:"Piso Antigolpes 25mm Negro (x100)",cd:"R03003-SM",pr:8878279.41}
+    ]},
+  { id:"c2", emp:"cruci", col:"azul", tit:"CRUCI - Pres. 00236858", fec:"05/05/2026", sub:"Refugio Bosque Chico + Domo + Hamaca Nido", fl:661936.21, ar:3444552.27, iv:0.2397, ds:0,
+    items:[
+      {id:"c2a",nm:"Refugio del Bosque Chico",cd:"P16101-A",pr:30545475.93},
+      {id:"c2b",nm:"Domo Escalador",cd:"R04079-SM",pr:1268443.05},
+      {id:"c2c",nm:"Hamaca Nido (930)",cd:"P04089-E",pr:1581744.95},
+      {id:"c2d",nm:"Calesita Circus",cd:"P04072-E",pr:1016743.99},
+      {id:"c2e",nm:"Rep. Base para Empotrar (x9)",cd:"P09110-SM",pr:800112.04}
+    ]},
+  { id:"c3", emp:"cruci", col:"azul", tit:"CRUCI - Pres. 00236859", fec:"05/05/2026", sub:"Mangrullo Aldea Gigante + Domo + Hamaca Nido", fl:661936.21, ar:2416298.97, iv:0.2415, ds:0,
+    items:[
+      {id:"c3a",nm:"Mangrullo Aldea Gigante",cd:"P16117-E",pr:20981845.85},
+      {id:"c3b",nm:"Domo Escalador",cd:"R04079-SM",pr:1277438.61},
+      {id:"c3c",nm:"Hamaca Nido (930)",cd:"P04089-E",pr:1592962.40},
+      {id:"c3d",nm:"Calesita Circus",cd:"P04072-E",pr:1023954.56}
+    ]},
+  { id:"m1", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10317", fec:"13/05/2026", sub:"Balcon de los Andes + Magic 2T + Hamaca", fl:0, ar:0, iv:0, ds:0,
+    items:[
+      {id:"m1a",nm:"Mangrullo Balcon de los Andes",cd:"J20.38",pr:34923413.25},
+      {id:"m1b",nm:"Mangrullo Magic 2 Torres Alt.A",cd:"J14.13A",pr:7921147.51},
+      {id:"m1c",nm:"Hamaca Cuadruple Inclusiva (3 cinta+1 silla)",cd:"JI09.8",pr:2121273.99}
+    ]},
+  { id:"m2", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10318", fec:"13/05/2026", sub:"Barco Pirata + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+    items:[
+      {id:"m2a",nm:"Barco Pirata",cd:"J20.35",pr:19008684.49},
+      {id:"m2b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
+      {id:"m2c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
+      {id:"m2d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
+    ]},
+  { id:"m3", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10319", fec:"13/05/2026", sub:"Velero Gigante + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+    items:[
+      {id:"m3a",nm:"Velero Gigante",cd:"J20.25",pr:37769304.22},
+      {id:"m3b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
+      {id:"m3c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
+      {id:"m3d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
+    ]},
+  { id:"m4", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10320", fec:"13/05/2026", sub:"Mangrullo Inclusivo Arbol + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+    items:[
+      {id:"m4a",nm:"Mangrullo Inclusivo Arbol",cd:"JI20.7",pr:21902585.10},
+      {id:"m4b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
+      {id:"m4c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
+      {id:"m4d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
+    ]},
+  { id:"m5", emp:"mundo", col:"verde", tit:"Mundo Juegos - Pres. 10321", fec:"13/05/2026", sub:"Mangrullo Integrador 2T + Hamacas (x3 tipos)", fl:0, ar:0, iv:0, ds:0.10,
+    items:[
+      {id:"m5a",nm:"Mangrullo Integrador 2T (tobogan, palestra, trepa)",cd:"JI05.8",pr:5691222.90},
+      {id:"m5b",nm:"Hamaca Especial Silla de Ruedas",cd:"JI01.1",pr:1248619.81},
+      {id:"m5c",nm:"Hamaca Plaza Cuadruple Combi (2 cinta+2 BB)",cd:"J01.4",pr:1153766.10},
+      {id:"m5d",nm:"Hamaca Cuadruple Inclusiva (2 cinta+BB+silla)",cd:"JI09.11",pr:2289203.30}
+    ]}
+];
+
+var sel = {};
+var open = {};
+var filtro = "todos";
+
+for (var i = 0; i < PP.length; i++) {
+  open[PP[i].id] = true;
+  for (var j = 0; j < PP[i].items.length; j++) {
+    sel[PP[i].items[j].id] = true;
+  }
+}
+
+function fmt(n) {
+  var s = Math.round(n).toString();
+  var out = "";
+  var c = 0;
+  for (var i = s.length - 1; i >= 0; i--) {
+    if (c > 0 && c % 3 === 0) out = "." + out;
+    out = s[i] + out;
+    c++;
+  }
+  return "$ " + out;
+}
+
+function filtrar(f) {
+  filtro = f;
+  document.getElementById("bt").className = "tab";
+  document.getElementById("bc").className = "tab";
+  document.getElementById("bm").className = "tab";
+  if (f === "todos") document.getElementById("bt").className = "tab tab-azul";
+  else if (f === "cruci") document.getElementById("bc").className = "tab tab-azul";
+  else document.getElementById("bm").className = "tab tab-verde";
+  render();
+}
+
+function toggleOpen(id) {
+  open[id] = !open[id];
+  render();
+}
+
+function toggleSel(id) {
+  sel[id] = !sel[id];
+  render();
+}
+
+function calc(p) {
+  var st = 0;
+  for (var i = 0; i < p.items.length; i++) {
+    if (sel[p.items[i].id]) st += p.items[i].pr;
+  }
+  var base = st + p.fl + p.ar;
+  var iva = base * p.iv;
+  return { st: st, iva: iva, total: base + iva };
+}
+
+function render() {
+  var h = "";
+  for (var i = 0; i < PP.length; i++) {
+    var p = PP[i];
+    if (filtro !== "todos" && p.emp !== filtro) continue;
+    var c = calc(p);
+    var isOpen = open[p.id];
+    h += '<div class="card">';
+    h += '<div class="card-header hdr-' + p.col + '" onclick="toggleOpen(\'' + p.id + '\')">';
+    h += '<div><div class="card-title">' + p.tit + ' <span style="font-weight:normal;font-size:11px;color:#888">' + p.fec + '</span></div>';
+    h += '<div class="card-sub">' + p.sub + '</div></div>';
+    h += '<span class="badge badge-' + p.col + '">' + fmt(c.total) + '</span>';
+    h += '</div>';
+    if (isOpen) {
+      h += '<div class="card-body">';
+      for (var j = 0; j < p.items.length; j++) {
+        var it = p.items[j];
+        var on = sel[it.id];
+        h += '<div class="item">';
+        h += '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="toggleSel(\'' + it.id + '\')">';
+        h += '<div class="item-info"><div class="' + (on ? 'item-nombre' : 'item-nombre-off') + '">' + it.nm + '</div>';
+        h += '<div class="item-cod">' + it.cd + '</div></div>';
+        h += '<div class="' + (on ? 'item-precio' : 'item-precio-off') + '">' + fmt(it.pr) + '</div>';
+        h += '</div>';
+      }
+      h += '</div><div class="totales">';
+      h += '<div class="trow"><span>Subtotal items</span><span>' + fmt(c.st) + '</span></div>';
+      if (p.emp === "cruci") {
+        h += '<div class="trow"><span>Flete <span class="tag tok">incluido</span></span><span>' + fmt(p.fl) + '</span></div>';
+        h += '<div class="trow"><span>Armado <span class="tag tok">incluido</span></span><span>' + fmt(p.ar) + '</span></div>';
+        h += '<div class="trow"><span>IVA (21%)</span><span>' + fmt(c.iva) + '</span></div>';
+      } else {
+        h += '<div class="trow"><span>Flete <span class="tag twarn">a convenir</span></span><span>-</span></div>';
+        h += '<div class="trow"><span>Armado <span class="tag tno">no incluido</span></span><span>-</span></div>';
+        if (p.ds) h += '<div class="desc">Descuento ' + Math.round(p.ds*100) + '% contado o cheque 0-30 dias: ' + fmt(c.st*(1-p.ds)) + '</div>';
+      }
+      h += '<div class="ttotal"><span>TOTAL</span><span>' + fmt(c.total) + '</span></div>';
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+  document.getElementById("lista").innerHTML = h;
+}
+
+render();
+</script>
+</body>
+</html>
