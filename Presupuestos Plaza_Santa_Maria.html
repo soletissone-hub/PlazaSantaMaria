@@ -40,6 +40,13 @@ header p { font-size: 12px; margin: 0; opacity: 0.8; }
 .twarn { background: #FFF8E1; color: #F57F17; }
 .tno { background: #FFEBEE; color: #C62828; }
 .desc { font-size: 12px; background: #FFF3E0; color: #E65100; padding: 6px 10px; border-radius: 6px; margin-top: 6px; }
+.resumen { background: white; border-radius: 10px; border: 2px solid #1565C0; margin-top: 20px; overflow: hidden; }
+.resumen-header { background: #1565C0; color: white; padding: 12px 16px; font-size: 14px; font-weight: bold; }
+.resumen-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 16px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+.resumen-item-info { flex: 1; }
+.resumen-proveedor { font-size: 11px; color: #888; margin-top: 1px; }
+.resumen-total { background: #E3F2FD; padding: 12px 16px; display: flex; justify-content: space-between; font-weight: bold; font-size: 15px; color: #0C447C; }
+.resumen-vacio { padding: 16px; color: #aaa; font-size: 13px; text-align: center; }
 </style>
 </head>
 <body>
@@ -54,6 +61,7 @@ header p { font-size: 12px; margin: 0; opacity: 0.8; }
     <button id="bm" class="tab" onclick="filtrar('mundo')">Mundo Juegos</button>
   </div>
   <div id="lista"></div>
+  <div id="resumen" class="resumen"></div>
 </div>
 <script>
 var PP = [
@@ -214,6 +222,36 @@ function render() {
     h += '</div>';
   }
   document.getElementById("lista").innerHTML = h;
+  renderResumen();
+}
+
+function renderResumen() {
+  var selItems = [];
+  for (var i = 0; i < PP.length; i++) {
+    var p = PP[i];
+    if (filtro !== "todos" && p.emp !== filtro) continue;
+    for (var j = 0; j < p.items.length; j++) {
+      var it = p.items[j];
+      if (sel[it.id]) selItems.push({ nm: it.nm, cd: it.cd, pr: it.pr, pres: p.tit, emp: p.emp, col: p.col });
+    }
+  }
+  var el = document.getElementById("resumen");
+  if (selItems.length === 0) {
+    el.innerHTML = '<div class="resumen-header">Seleccion combinada</div><div class="resumen-vacio">Selecciona articulos de cualquier presupuesto para ver el total combinado.</div>';
+    return;
+  }
+  var total = 0;
+  var h = '<div class="resumen-header">Seleccion combinada (' + selItems.length + ' articulos)</div>';
+  for (var k = 0; k < selItems.length; k++) {
+    var it = selItems[k];
+    total += it.pr;
+    h += '<div class="resumen-item">';
+    h += '<div class="resumen-item-info"><div>' + it.nm + '</div><div class="resumen-proveedor">' + it.pres + ' &mdash; ' + it.cd + '</div></div>';
+    h += '<div style="font-size:13px;font-weight:bold;white-space:nowrap;padding-left:12px">' + fmt(it.pr) + '</div>';
+    h += '</div>';
+  }
+  h += '<div class="resumen-total"><span>TOTAL COMBINADO</span><span>' + fmt(total) + '</span></div>';
+  el.innerHTML = h;
 }
 
 render();
